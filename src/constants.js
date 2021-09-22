@@ -3,14 +3,13 @@ import os from 'os'
 
 import { version } from '../package.json'
 
-export const DEFAULT_SAUCE_CONNECT_VERSION = '4.6.4'
+export const DEFAULT_SAUCE_CONNECT_VERSION = '4.6.5'
 export const SAUCE_CONNECT_BASE = 'https://saucelabs.com/downloads'
 export const SAUCE_CONNECT_VERSIONS_ENDPOINT = 'https://saucelabs.com/versions.json'
 export const SAUCE_CONNECT_DISTS = [
     [`${SAUCE_CONNECT_BASE}/sc-%s-osx.zip`, 'darwin'],
     [`${SAUCE_CONNECT_BASE}/sc-%s-win32.zip`, 'win32'],
-    [`${SAUCE_CONNECT_BASE}/sc-%s-linux.tar.gz`, 'linux', 'x64'],
-    [`${SAUCE_CONNECT_BASE}/sc-%s-linux32.tar.gz`, 'linux']
+    [`${SAUCE_CONNECT_BASE}/sc-%s-linux.tar.gz`, 'linux']
 ]
 export const SAUCE_VERSION_NOTE = `node-saucelabs v${version}\nSauce Connect v${DEFAULT_SAUCE_CONNECT_VERSION}`
 
@@ -18,8 +17,9 @@ const protocols = [
     require('../apis/sauce.json'),
     require('../apis/rdc.json'),
     require('../apis/performance.json'),
-    require('../apis/testrunner.json'),
-    require('../apis/datastore.json')
+    require('../apis/testcomposer.json'),
+    require('../apis/datastore.json'),
+    require('../apis/autonomiq.json')
 ]
 
 const protocolFlattened = new Map()
@@ -79,9 +79,11 @@ export const DEFAULT_OPTIONS = {
 export const ASSET_REGION_MAPPING = {
     'us': '',
     'eu': 'eu-central-1.',
+    'apac': 'apac-southeast-1',
     'us-west-1': '',
     'us-east-1': 'us-east-1.',
     'eu-central-1': 'eu-central-1.',
+    'apac-southeast-1': 'apac-southeast-1',
     'staging': 'staging.'
 }
 
@@ -89,7 +91,6 @@ export const SYMBOL_INSPECT = Symbol.for('nodejs.util.inspect.custom')
 export const SYMBOL_TOSTRING = Symbol.toStringTag
 export const SYMBOL_ITERATOR = Symbol.iterator
 export const TO_STRING_TAG = 'SauceLabs API Client'
-export const DEFAULT_PROTOCOL = 'https://'
 
 export const USAGE = `Sauce Labs API CLI
 

@@ -2,7 +2,7 @@
     <img src="./assets/trophy-bot.png" alt="Trophy bot" />
 </p>
 
-# Node Sauce Labs [![Build Status](https://travis-ci.org/saucelabs/node-saucelabs.svg?branch=master)](https://travis-ci.org/saucelabs/node-saucelabs)
+# Node Sauce Labs [![Test Changes](https://github.com/saucelabs/node-saucelabs/actions/workflows/test.yml/badge.svg)](https://github.com/saucelabs/node-saucelabs/actions/workflows/test.yml)
 
 Wrapper around all Sauce Labs REST APIs for [Node.js](http://nodejs.org/) (v8 or higher) including support for [Sauce Connect Proxy](https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy) and TypeScript definitions.
 
@@ -119,7 +119,7 @@ $ sl sc --scVersion 4.5.4
 $ sl sc --help
 ```
 
-You can see all available Sauce Connect parameters on the [Sauce Labs Wiki Page](https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy+Command-Line+Quick+Reference+Guide).
+You can see all available Sauce Connect parameters on the [Sauce Labs Docs](https://docs.saucelabs.com/dev/cli/sauce-connect-proxy/).
 
 ### As NPM Package
 
@@ -189,7 +189,7 @@ import SauceLabs from 'saucelabs';
          */
         logger: (stdout) => console.log(stdout),
         /**
-         * see all available parameters here: https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy+Command-Line+Quick+Reference+Guide
+         * see all available parameters here: https://docs.saucelabs.com/dev/cli/sauce-connect-proxy/
          * all parameters have to be applied camel cased instead of with hyphens, e.g.
          * to apply the `--tunnel-identifier` parameter, set:
          */
@@ -220,7 +220,7 @@ import SauceLabs from 'saucelabs';
 })()
 ```
 
-> You may wonder why `listJobs` requires a `username` as first parameter since you've already defined the process.env. The reason for this is that Sauce Labs supports a concept of Team Accounts, so-called sub-accounts, grouped together. As such functions like the mentioned could list jobs not only for the requesting account, but also for the individual team account. Learn more about it [here](https://wiki.saucelabs.com/display/DOCS/Managing+Team+Members+and+Accounts)
+> You may wonder why `listJobs` requires a `username` as first parameter since you've already defined the process.env. The reason for this is that Sauce Labs supports a concept of Team Accounts, so-called sub-accounts, grouped together. As such functions like the mentioned could list jobs not only for the requesting account, but also for the individual team account. Learn more about it [here](https://docs.saucelabs.com/basics/acct-team-mgmt-hub/)
 
 ### `webdriverEndpoint` property
 
@@ -237,41 +237,6 @@ const myAccount = new SauceLabs({
 console.log(myAccount.webdriverEndpoint);
 // outputs: "https://ondemand.eu-central-1.saucelabs.com/"
 ```
-
-## Breaking changes from v1 to v2
-
-Public APIs have changed from v1 to v2. Methods in v1 accepted a `callback` trailing parameter which is no more available with v2, instead all methods now return a Promise which can be `awaited` or `then`'d.
-
-Below, you can find the list of the mapped method names:
-
-| v1 | v2 |
-|----|----|
-| getAccountDetails(callback)   | async getUser(username) |
-| getAccountLimits(callback)   | ? |
-| getUserActivity(callback)   | async getUserActivity(username) |
-| getUserConcurrency(callback) | async getUserConcurrency(username) |
-| getAccountUsage(start, end, callback) | ? |
-| getJobs(callback) | async listJobs(username, { ...options }) // with option: full: true |
-| showJob(id, callback) | async getJob(username, id) |
-| showJobAssets(id, callback) | ? |
-| updateJob(id, data, callback) | async updateJob(username, id, body) |
-| stopJob(id, data, callback) | async stopJob(username, id) |
-| deleteJob(id, callback) | ? |
-| getActiveTunnels(callback) | async listAvailableTunnels(username) |
-| getTunnel(id, callback) | async getTunnel(username, id) |
-| deleteTunnel(id, callback) | async deleteTunnel(username, id) |
-| getServiceStatus(callback) |async getStatus() |
-| getBrowsers(callback) | ? |
-| getAllBrowsers(callback) | async listPlatforms(platform)  // pass "all" |
-| getSeleniumBrowsers(callback) | Selenium-RC no longer supported |
-| getWebDriverBrowsers(callback) | async listPlatforms(platform) // pass "webdriver" |
-| getTestCounter(callback) | ? |
-| updateSubAccount(data, callback) | ? |
-| deleteSubAccount(callback) | ? |
-| createSubAccount(data, callback) | ? |
-| createPublicLink(id, date, useHour, callback) | ? |
-| getSubAccountList(callback) | ? |
-| getSubAccounts(callback) | ? |
 
 ---
 

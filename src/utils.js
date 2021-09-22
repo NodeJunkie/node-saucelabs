@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import tunnel from 'tunnel'
 import url from 'url'
 
-import { ASSET_REGION_MAPPING, TO_STRING_TAG, PARAMETERS_MAP, DEFAULT_PROTOCOL } from './constants'
+import { ASSET_REGION_MAPPING, TO_STRING_TAG, PARAMETERS_MAP } from './constants'
 
 /**
  * Create HMAC token to receive job assets
@@ -35,6 +35,7 @@ export function getRegionSubDomain (options = {}) {
 
     if (options.region === 'us') region = 'us-west-1'
     if (options.region === 'eu') region = 'eu-central-1'
+    if (options.region === 'apac') region = 'apac-southeast-1'
     if (options.headless) region = 'us-east-1'
     return region
 }
@@ -50,8 +51,7 @@ export function getAPIHost (servers, basePath, options) {
     /**
      * allows to set an arbitrary host (for internal use only)
      */
-    const apiUrl = options.host || servers[0].url
-    let host = DEFAULT_PROTOCOL + apiUrl.replace(DEFAULT_PROTOCOL, '') + basePath
+    let host = (options.host || servers[0].url) + basePath
 
     /**
      * allow short region handles to stay backwards compatible
