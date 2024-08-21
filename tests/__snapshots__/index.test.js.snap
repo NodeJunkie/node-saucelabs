@@ -1,35 +1,184 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should contain custom headers 1`] = `
-Object {
-  "user-agent": "foo",
-}
+exports[`should contain all download links 1`] = `
+[
+  [
+    "https://api.us-west-1.saucelabs.com/rest/v1/public/tunnels/info/versions",
+    {
+      "responseType": "json",
+      "searchParams": {
+        "all": true,
+        "client_host": "darwin-arm64",
+        "client_version": "5.1.1",
+      },
+    },
+  ],
+]
 `;
 
-exports[`startSauceConnect should not overwrite rest-url if given as a parameter 1`] = `
-Array [
-  Array [
+exports[`should get builds failed jobs 1`] = `
+[
+  [
+    "https://api.us-west-1.saucelabs.com/team-management/v1/users",
+    {
+      "responseType": "json",
+      "searchParams": {
+        "username": "fooUser",
+      },
+    },
+  ],
+  [
+    "https://api.us-west-1.saucelabs.com/v2/builds/vdc/build-1/jobs/",
+    {
+      "responseType": "json",
+      "searchParams": {
+        "faulty": true,
+        "limit": 10,
+        "offset": 5,
+        "user_id": "foo-id",
+      },
+    },
+  ],
+  [
+    "https://api.us-west-1.saucelabs.com/rest/v1.1/jobs",
+    {
+      "responseType": "json",
+      "searchParams": "full=true&id=job-1&id=job-2",
+    },
+  ],
+]
+`;
+
+exports[`should get builds failed jobs 2`] = `
+[
+  {
+    "id": "job-1",
+    "name": "foo-job",
+    "status": "failed",
+  },
+  {
+    "id": "job-2",
+    "name": "bar-job",
+    "status": "errored",
+  },
+]
+`;
+
+exports[`should get builds jobs 1`] = `
+[
+  [
+    "https://api.us-west-1.saucelabs.com/v2/builds/vdc/build-1/jobs/",
+    {
+      "responseType": "json",
+      "searchParams": {
+        "limit": 10,
+        "offset": 5,
+      },
+    },
+  ],
+  [
+    "https://api.us-west-1.saucelabs.com/rest/v1.1/jobs",
+    {
+      "responseType": "json",
+      "searchParams": "full=true&id=job-1&id=job-2",
+    },
+  ],
+]
+`;
+
+exports[`should get builds jobs 2`] = `
+[
+  {
+    "id": "job-1",
+    "name": "foo-job",
+    "status": "failed",
+  },
+  {
+    "id": "job-2",
+    "name": "bar-job",
+    "status": "errored",
+  },
+]
+`;
+
+exports[`should get list of builds 1`] = `
+[
+  [
+    "https://api.us-west-1.saucelabs.com/team-management/v1/users",
+    {
+      "responseType": "json",
+      "searchParams": {
+        "username": "fooUser",
+      },
+    },
+  ],
+  [
+    "https://api.us-west-1.saucelabs.com/v2/builds/vdc/",
+    {
+      "responseType": "json",
+      "searchParams": {
+        "limit": 10,
+        "offset": 5,
+        "user_id": "foo-id",
+      },
+    },
+  ],
+]
+`;
+
+exports[`should get user by username 1`] = `
+[
+  "https://api.us-west-1.saucelabs.com/team-management/v1/users",
+  {
+    "responseType": "json",
+    "searchParams": {
+      "username": "fooUser",
+    },
+  },
+]
+`;
+
+exports[`should have status latest 1`] = `
+[
+  [
+    "https://api.us-west-1.saucelabs.com/rest/v1/public/tunnels/info/versions",
+    {
+      "responseType": "json",
+      "searchParams": {
+        "client_host": "darwin-arm64",
+        "client_version": "5.1.1",
+      },
+    },
+  ],
+]
+`;
+
+exports[`startSauceConnect should start sauce connect with fallback default version in case the call to the API failed 1`] = `
+[
+  [
     "/foo/bar",
-    Array [
-      "--tunnel-identifier=my-tunnel",
-      "--rest-url=https://us1.api.testobject.com/sc/rest/v1",
+    [
+      "--proxy-tunnel",
+      "--tunnel-name=my-tunnel",
       "--user=foo",
       "--api-key=bar",
+      "--region=us-west-1",
     ],
   ],
 ]
 `;
 
 exports[`startSauceConnect should start sauce connect with proper parsed args 1`] = `
-Array [
-  Array [
+[
+  [
     "/foo/bar",
-    Array [
-      "--proxy-tunnel=abc",
-      "--tunnel-identifier=my-tunnel",
+    [
+      "--proxy-tunnel",
+      "--verbose",
+      "--tunnel-name=my-tunnel",
       "--user=foo",
       "--api-key=bar",
-      "--rest-url=https://us-east-1.saucelabs.com/rest/v1",
+      "--region=eu-central-1",
     ],
   ],
 ]

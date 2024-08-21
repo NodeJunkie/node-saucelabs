@@ -1,16 +1,13 @@
-<p align="center">
-    <img src="./assets/trophy-bot.png" alt="Trophy bot" />
-</p>
+# Node Sauce Labs [![Test Changes](https://github.com/saucelabs/node-saucelabs/actions/workflows/test.yml/badge.svg)](https://github.com/saucelabs/node-saucelabs/actions/workflows/test.yml)
 
-# Node Sauce Labs [![Build Status](https://travis-ci.org/saucelabs/node-saucelabs.svg?branch=master)](https://travis-ci.org/saucelabs/node-saucelabs)
-
-Wrapper around all Sauce Labs REST APIs for [Node.js](http://nodejs.org/) (v8 or higher) including support for [Sauce Connect Proxy](https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy) and TypeScript definitions.
+Wrapper around all Sauce Labs REST APIs for [Node.js](http://nodejs.org/) (v18 or higher) including support for
+[Sauce Connect Proxy](https://docs.saucelabs.com/secure-connections/sauce-connect/) and TypeScript definitions.
 
 ## Install
 
 To install the package run:
 
-```shell
+```sh
 npm install saucelabs
 ```
 
@@ -20,14 +17,14 @@ npm install saucelabs
 
 Your Sauce Labs username.
 
-Type: `string`<br>
+Type: `string`
 Default: `process.env.SAUCE_USERNAME`
 
 ### key
 
 Your Sauce Labs access key.
 
-Type: `string`<br>
+Type: `string`
 Default: `process.env.SAUCE_ACCESS_KEY`
 
 ### region
@@ -36,23 +33,16 @@ Your Sauce Labs datacenter region. The following regions are available:
 
 - `us-west-1` (short `us`)
 - `eu-central-1` (short `eu`)
-- `us-east-1` (headless)
+- `us-east-4` (real mobile devices only)
 
-Type: `string`<br>
+Type: `string`
 Default: `us`
-
-### headless
-
-If set to true you are accessing the headless Sauce instances (this discards the `region` option).
-
-Type: `boolean`<br>
-Default: `false`
 
 ### proxy
 
 If you want to tunnel your API request through a proxy please provide your proxy URL.
 
-Type: `string`<br>
+Type: `string`
 Default: `null`
 
 ### headers
@@ -73,7 +63,7 @@ This package if installed globally can be used as CLI tool to access the API fro
 ```sh
 $ npm install -g saucelabs
 ...
-$ sl listJobs $SAUCE_USERNAME --limit 5 --region eu
+$ sl listJobs $SAUCE_USERNAME 5 --region eu
 { jobs:
    [ { id: '19dab74f8fd848518f8d2c2cee3a6fbd' },
      { id: 'dc08ca0c7fa14eee909a093d11567328' },
@@ -112,14 +102,14 @@ or start Sauce Connect Proxy in EU datacenter:
 
 ```sh
 # start Sauce Connect tunnel for eu-central-1 region
-$ sl sc --region eu --tunnel-identifier "my-tunnel"
+$ sl sc --region eu --tunnel-name "my-tunnel"
 # run a specific Sauce Connect version
-$ sl sc --scVersion 4.5.4
+$ sl sc --scVersion 4.9.1
 # see all available Sauce Connect parameters via:
 $ sl sc --help
 ```
 
-You can see all available Sauce Connect parameters on the [Sauce Labs Wiki Page](https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy+Command-Line+Quick+Reference+Guide).
+You can see all available Sauce Connect parameters on the [Sauce Labs Docs](https://docs.saucelabs.com/dev/cli/sauce-connect-proxy/).
 
 ### As NPM Package
 
@@ -131,21 +121,21 @@ import SauceLabs from 'saucelabs';
 // const SauceLabs = require('saucelabs').default;
 
 (async () => {
-    const myAccount = new SauceLabs();
-    // using constructor options
-    // const myAccount = new SauceLabs({ user: "YOUR-USER", key: "YOUR-ACCESS-KEY"});
+  const myAccount = new SauceLabs();
+  // using constructor options
+  // const myAccount = new SauceLabs({ user: "YOUR-USER", key: "YOUR-ACCESS-KEY"});
 
-    // get full webdriver url from the client depending on region:
-    console.log(myAccount.webdriverEndpoint) // outputs "https://ondemand.us-west-1.saucelabs.com/"
+  // get full webdriver url from the client depending on region:
+  console.log(myAccount.webdriverEndpoint); // outputs "https://ondemand.us-west-1.saucelabs.com/"
 
-    // get job details of last run job
-    const jobs = await myAccount.listJobs(
-        process.env.SAUCE_USERNAME,
-        { limit: 1, full: true }
-    );
+  // get job details of last run job
+  const jobs = await myAccount.listJobs(process.env.SAUCE_USERNAME, {
+    limit: 1,
+    full: true,
+  });
 
-    console.log(jobs);
-    /**
+  console.log(jobs);
+  /**
      * outputs:
      * { jobs:
         [ { browser_short_version: '72',
@@ -180,47 +170,45 @@ import SauceLabs from 'saucelabs';
             browser: 'googlechrome' } ] }
      */
 
+  /**
+   * start Sauce Connect Proxy
+   */
+  const sc = await myAccount.startSauceConnect({
     /**
-     * start Sauce Connect Proxy
+     * you can pass in a `logger` method to print Sauce Connect log messages
      */
-    const sc = await myAccount.startSauceConnect({
-        /**
-         * you can pass in a `logger` method to print Sauce Connect log messages
-         */
-        logger: (stdout) => console.log(stdout),
-        /**
-         * see all available parameters here: https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy+Command-Line+Quick+Reference+Guide
-         * all parameters have to be applied camel cased instead of with hyphens, e.g.
-         * to apply the `--tunnel-identifier` parameter, set:
-         */
-        tunnelIdentifier: 'my-tunnel'
-    })
+    logger: (stdout) => console.log(stdout),
+    /**
+     * see all available parameters here: https://docs.saucelabs.com/dev/cli/sauce-connect-proxy/
+     * all parameters have to be applied camel cased instead of with hyphens, e.g.
+     * to apply the `--tunnel-name` parameter, set:
+     */
+    tunnelName: 'my-tunnel',
+  });
 
-    // run a test
-    // ...
+  // run a test
+  // ...
 
-    // close Sauce Connect
-    await sc.close()
+  // close Sauce Connect
+  await sc.close();
 
-    // upload additional log files and attach it to your Sauce job
-    await myAccount.uploadJobAssets(
-        '76e693dbe6ff4910abb0bc3d752a971e',
-        [
-            // either pass in file names
-            './logs/video.mp4', './logs/log.json',
-            // or file objects
-            {
-                filename: 'myCustomLogFile.json',
-                data: {
-                    someLog: 'data'
-                }
-            }
-        ]
-    )
-})()
+  // upload additional log files and attach it to your Sauce job
+  await myAccount.uploadJobAssets('76e693dbe6ff4910abb0bc3d752a971e', [
+    // either pass in file names
+    './logs/video.mp4',
+    './logs/log.json',
+    // or file objects
+    {
+      filename: 'myCustomLogFile.json',
+      data: {
+        someLog: 'data',
+      },
+    },
+  ]);
+})();
 ```
 
-> You may wonder why `listJobs` requires a `username` as first parameter since you've already defined the process.env. The reason for this is that Sauce Labs supports a concept of Team Accounts, so-called sub-accounts, grouped together. As such functions like the mentioned could list jobs not only for the requesting account, but also for the individual team account. Learn more about it [here](https://wiki.saucelabs.com/display/DOCS/Managing+Team+Members+and+Accounts)
+> You may wonder why `listJobs` requires a `username` as first parameter since you've already defined the process.env. The reason for this is that Sauce Labs supports a concept of Team Accounts, so-called sub-accounts, grouped together. As such functions like the mentioned could list jobs not only for the requesting account, but also for the individual team account. Learn more about it [here](https://docs.saucelabs.com/basics/acct-team-mgmt-hub/)
 
 ### `webdriverEndpoint` property
 
@@ -228,51 +216,20 @@ You can use the `webdriverEndpoint` property of the client to get the full WebDr
 
 ```js
 const myAccount = new SauceLabs({
-    user: "YOUR-USER",
-    key: "YOUR-ACCESS-KEY",
-    region: 'eu' // run in EU datacenter
+  user: 'YOUR-USER',
+  key: 'YOUR-ACCESS-KEY',
+  region: 'eu', // run in EU datacenter
 });
 
-// get full webdriver url from the client depending on `region` and `headless` option:
+// get full webdriver url from the client depending on `region` option:
 console.log(myAccount.webdriverEndpoint);
 // outputs: "https://ondemand.eu-central-1.saucelabs.com/"
 ```
 
-## Breaking changes from v1 to v2
-
-Public APIs have changed from v1 to v2. Methods in v1 accepted a `callback` trailing parameter which is no more available with v2, instead all methods now return a Promise which can be `awaited` or `then`'d.
-
-Below, you can find the list of the mapped method names:
-
-| v1 | v2 |
-|----|----|
-| getAccountDetails(callback)   | async getUser(username) |
-| getAccountLimits(callback)   | ? |
-| getUserActivity(callback)   | async getUserActivity(username) |
-| getUserConcurrency(callback) | async getUserConcurrency(username) |
-| getAccountUsage(start, end, callback) | ? |
-| getJobs(callback) | async listJobs(username, { ...options }) // with option: full: true |
-| showJob(id, callback) | async getJob(username, id) |
-| showJobAssets(id, callback) | ? |
-| updateJob(id, data, callback) | async updateJob(username, id, body) |
-| stopJob(id, data, callback) | async stopJob(username, id) |
-| deleteJob(id, callback) | ? |
-| getActiveTunnels(callback) | async listAvailableTunnels(username) |
-| getTunnel(id, callback) | async getTunnel(username, id) |
-| deleteTunnel(id, callback) | async deleteTunnel(username, id) |
-| getServiceStatus(callback) |async getStatus() |
-| getBrowsers(callback) | ? |
-| getAllBrowsers(callback) | async listPlatforms(platform)  // pass "all" |
-| getSeleniumBrowsers(callback) | Selenium-RC no longer supported |
-| getWebDriverBrowsers(callback) | async listPlatforms(platform) // pass "webdriver" |
-| getTestCounter(callback) | ? |
-| updateSubAccount(data, callback) | ? |
-| deleteSubAccount(callback) | ? |
-| createSubAccount(data, callback) | ? |
-| createPublicLink(id, date, useHour, callback) | ? |
-| getSubAccountList(callback) | ? |
-| getSubAccounts(callback) | ? |
-
----
+## Contributors
 
 This module was originally created by [Dan Jenkins](https://github.com/danjenkins) with the help of multiple contributors ([Daniel Perez Alvarez](https://github.com/unindented), [Mathieu Sabourin](https://github.com/OniOni), [Michael J Feher](https://github.com/PhearZero), and many more). We would like to thank Dan and all contributors for their support and this beautiful module.
+
+## License
+
+Copyright 2012 Sauce Labs, Inc. Licensed Apache-2.0
